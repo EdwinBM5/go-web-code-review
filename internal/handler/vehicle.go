@@ -172,7 +172,6 @@ func (h *VehicleDefault) Create() http.HandlerFunc {
 			"data":    data,
 		})
 	}
-
 }
 
 // Exercise two from code review
@@ -241,11 +240,11 @@ func (h *VehicleDefault) GetByDimensions() http.HandlerFunc {
 			}
 			min, err := strconv.ParseFloat(split[0], 64)
 			if err != nil {
-				return 0, 0, err
+				return 0, 0, internal.ErrorInvalidQueryParamFormat
 			}
 			max, err := strconv.ParseFloat(split[1], 64)
 			if err != nil {
-				return 0, 0, err
+				return 0, 0, internal.ErrorInvalidQueryParamFormat
 			}
 
 			return min, max, nil
