@@ -57,6 +57,6 @@ var (
 	ErrorInvalidYear           = errors.New("Year must be a number")
 	ErrorInvalidColorAndYear   = errors.New("Color and year are required")
 	ErrorInvalidDimension      = errors.New("Invalid dimensions")
-	ErrorInvalidLengthAndWidth = errors.New("Length and width are required")
+	ErrorInvalidHeightAndWidth = errors.New("Length and width are required")
 	ErrorVehicleAlreadyExists  = errors.New("Vehicle already exists")
 )

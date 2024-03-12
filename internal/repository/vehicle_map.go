@@ -68,11 +68,11 @@ func (r *VehicleMap) FindByColorAndYear(color string, year int) (v map[int]inter
 }
 
 // FindByDimensions is a method that returns a map of vehicles that match the dimensions
-func (r *VehicleMap) FindByDimensions(minLength float64, maxLength float64, minWidth float64, maxWidth float64) (v map[int]internal.Vehicle, err error) {
+func (r *VehicleMap) FindByDimensions(minHeight float64, maxHeight float64, minWidth float64, maxWidth float64) (v map[int]internal.Vehicle, err error) {
 	v = make(map[int]internal.Vehicle)
 
 	for key, value := range r.db {
-		if value.Length >= minLength && value.Length <= maxLength && value.Width >= minWidth && value.Width <= maxWidth {
+		if value.Height >= minHeight && value.Height <= maxHeight && value.Width >= minWidth && value.Width <= maxWidth {
 			v[key] = value
 		}
 	}

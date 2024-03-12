@@ -32,7 +32,7 @@ func (s *VehicleDefault) FindByColorAndYear(color string, year int) (v map[int]i
 }
 
 // FindByDimensions is a method that returns a map of vehicles that match the dimensions
-func (s *VehicleDefault) FindByDimensions(minLength float64, maxLength float64, minWidth float64, maxWidth float64) (v map[int]internal.Vehicle, err error) {
-	v, err = s.rp.FindByDimensions(minLength, maxLength, minWidth, maxWidth)
+func (s *VehicleDefault) FindByDimensions(minHeight float64, maxHeight float64, minWidth float64, maxWidth float64) (v map[int]internal.Vehicle, err error) {
+	v, err = s.rp.FindByDimensions(minHeight, maxHeight, minWidth, maxWidth)
 	return
 }

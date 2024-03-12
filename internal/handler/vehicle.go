@@ -221,15 +221,15 @@ func (h *VehicleDefault) GetByColorAndYear() http.HandlerFunc {
 	}
 }
 
-// Exercise twelve from code review - No length uses width and height
-// GetByDimensions is a method that returns a handler for the route GET /vehicles/dimensions?length={length}&width={width}
+// Exercise twelve from code review - No LENGTH uses width and height
+// GetByDimensions is a method that returns a handler for the route GET /vehicles/dimensions?height={height}&width={width}
 func (h *VehicleDefault) GetByDimensions() http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
-		length := r.URL.Query().Get("length")
+		height := r.URL.Query().Get("height")
 		width := r.URL.Query().Get("width")
 
-		if length == "" || width == "" {
-			response.Error(w, http.StatusBadRequest, internal.ErrorInvalidLengthAndWidth.Error())
+		if height == "" || width == "" {
+			response.Error(w, http.StatusBadRequest, internal.ErrorInvalidHeightAndWidth.Error())
 
 			return
 		}
@@ -251,7 +251,7 @@ func (h *VehicleDefault) GetByDimensions() http.HandlerFunc {
 			return min, max, nil
 		}
 
-		minLength, maxLength, err := splitDimension(length)
+		minHeight, maxHeight, err := splitDimension(height)
 		if err != nil {
 			response.Error(w, http.StatusBadRequest, err.Error())
 
@@ -265,7 +265,7 @@ func (h *VehicleDefault) GetByDimensions() http.HandlerFunc {
 			return
 		}
 
-		v, err := h.sv.FindByDimensions(minLength, maxLength, minWidth, maxWidth)
+		v, err := h.sv.FindByDimensions(minHeight, maxHeight, minWidth, maxWidth)
 		if err != nil {
 			switch {
 			case errors.Is(err, internal.ErrorVehicleNotFound):
