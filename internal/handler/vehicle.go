@@ -33,6 +33,7 @@ type VehicleJSON struct {
 	Width           float64 `json:"width"`
 }
 
+// JSON is a method that returns a VehicleJSON from a Vehicle
 func (v *VehicleJSON) JSON(vehicle internal.Vehicle) VehicleJSON {
 	v.ID = vehicle.Id
 	v.Brand = vehicle.Brand

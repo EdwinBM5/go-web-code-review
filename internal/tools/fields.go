@@ -4,6 +4,8 @@ import (
 	"fmt"
 )
 
+// Code by Lucas Nicolás Masiero
+// Digital Ocean - Meli Bootcamp Go
 type FieldError struct {
 	Field string
 	Msg   string
