@@ -142,6 +142,28 @@ func (r *VehicleMap) FindByTransmissionType(transmissionType string) (v map[int]
 	return
 }
 
+// FindAverageCapacityByBrand is a method that returns a value of average person capacity by brand
+func (r *VehicleMap) FindAverageCapacityByBrand(brand string) (avgCapacity float64, err error) {
+	var totalCapacity float64
+	var brandCount int
+
+	for _, value := range r.db {
+		if value.Brand == brand {
+			totalCapacity += float64(value.Capacity)
+			brandCount++
+		}
+	}
+
+	if brandCount == 0 {
+		err = internal.ErrorVehicleNotFound
+		return
+	}
+
+	avgCapacity = totalCapacity / float64(brandCount)
+
+	return
+}
+
 // FindByDimensions is a method that returns a map of vehicles that match the dimensions
 func (r *VehicleMap) FindByDimensions(minHeight float64, maxHeight float64, minWidth float64, maxWidth float64) (v map[int]internal.Vehicle, err error) {
 	v = make(map[int]internal.Vehicle)

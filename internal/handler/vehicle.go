@@ -382,6 +382,40 @@ func (h *VehicleDefault) GetByTransmissionType() http.HandlerFunc {
 	}
 }
 
+// Exercise eleven from code review
+// GetAverageCapacityByBrand is a method that returns a handler for the route GET /vehicles/average-capacity/brand/{brand}
+func (h *VehicleDefault) GetAverageCapacityByBrand() http.HandlerFunc {
+	return func(w http.ResponseWriter, r *http.Request) {
+		brand := chi.URLParam(r, "brand")
+
+		if brand == "" {
+			response.Error(w, http.StatusBadRequest, internal.ErrorInvalidBrand.Error())
+
+			return
+		}
+
+		averageCapacity, err := h.sv.FindAverageCapacityByBrand(brand)
+		if err != nil {
+			switch {
+			case errors.Is(err, internal.ErrorVehicleNotFound):
+				response.Error(w, http.StatusNotFound, err.Error())
+			default:
+				response.Error(w, http.StatusInternalServerError, internal.ErrorInternalServer.Error())
+			}
+
+			return
+		}
+
+		response.JSON(w, http.StatusOK, map[string]any{
+			"message": "Success",
+			"data": map[string]any{
+				"brand":            brand,
+				"average_capacity": averageCapacity,
+			},
+		})
+	}
+}
+
 // Exercise twelve from code review - No LENGTH uses width and height
 // GetByDimensions is a method that returns a handler for the route GET /vehicles/dimensions?height={height}&width={width}
 func (h *VehicleDefault) GetByDimensions() http.HandlerFunc {

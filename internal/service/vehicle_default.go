@@ -55,6 +55,12 @@ func (s *VehicleDefault) FindByTransmissionType(transmissionType string) (v map[
 	return
 }
 
+// FindAverageCapacityByBrand is a method that returns a value of average person capacity by brand
+func (s *VehicleDefault) FindAverageCapacityByBrand(brand string) (avgCapacity float64, err error) {
+	avgCapacity, err = s.rp.FindAverageCapacityByBrand(brand)
+	return
+}
+
 // FindByDimensions is a method that returns a map of vehicles that match the dimensions
 func (s *VehicleDefault) FindByDimensions(minHeight float64, maxHeight float64, minWidth float64, maxWidth float64) (v map[int]internal.Vehicle, err error) {
 	v, err = s.rp.FindByDimensions(minHeight, maxHeight, minWidth, maxWidth)
