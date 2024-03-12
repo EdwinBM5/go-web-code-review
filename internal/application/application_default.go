@@ -76,8 +76,14 @@ func (a *ServerChi) Run() (err error) {
 		// - POST /vehicles
 		rt.Post("/", hd.Create())
 
+		// - GET /vehicles/brand/{brand}/between/{start_year}/{end_year}
+		rt.Get("/brand/{brand}/between/{start_year}/{end_year}", hd.GetByBrandAndRangeYear())
+
 		// - GET /vehicles/color/{color}/year/{year}
 		rt.Get("/color/{color}/year/{year}", hd.GetByColorAndYear())
+
+		// - GET /vehicles/average-speed/brand/{brand}
+		rt.Get("/average-speed/brand/{brand}", hd.GetAverageSpeedByBrand())
 
 		// - GET /vehicles/dimensions?length={min_length}-{max_length}&width={min_width}-{max_width}
 		rt.Get("/dimensions", hd.GetByDimensions())

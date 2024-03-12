@@ -67,6 +67,45 @@ func (r *VehicleMap) FindByColorAndYear(color string, year int) (v map[int]inter
 	return
 }
 
+// FindByBrandAndRangeYear is a method that returns a map of vehicles that match the brand and range year
+func (r *VehicleMap) FindByBrandAndRangeYear(brand string, startYear int, endYear int) (v map[int]internal.Vehicle, err error) {
+	v = make(map[int]internal.Vehicle)
+
+	for key, value := range r.db {
+		if value.Brand == brand && value.FabricationYear >= startYear && value.FabricationYear <= endYear {
+			v[key] = value
+		}
+	}
+
+	if len(v) == 0 {
+		err = internal.ErrorVehicleNotFound
+	}
+
+	return
+}
+
+// FindAverageSpeedByBrand is a method that returns a value of average speed by brand
+func (r *VehicleMap) FindAverageSpeedByBrand(brand string) (avgSpeed float64, err error) {
+	var totalSpeed float64
+	var brandCount int
+
+	for _, value := range r.db {
+		if value.Brand == brand {
+			totalSpeed += value.MaxSpeed
+			brandCount++
+		}
+	}
+
+	if brandCount == 0 {
+		err = internal.ErrorVehicleNotFound
+		return
+	}
+
+	avgSpeed = totalSpeed / float64(brandCount)
+
+	return
+}
+
 // FindByDimensions is a method that returns a map of vehicles that match the dimensions
 func (r *VehicleMap) FindByDimensions(minHeight float64, maxHeight float64, minWidth float64, maxWidth float64) (v map[int]internal.Vehicle, err error) {
 	v = make(map[int]internal.Vehicle)

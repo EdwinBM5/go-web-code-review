@@ -31,6 +31,18 @@ func (s *VehicleDefault) FindByColorAndYear(color string, year int) (v map[int]i
 	return
 }
 
+// FindByBrandAndRangeYear is a method that returns a map of vehicles that match the brand and range year
+func (s *VehicleDefault) FindByBrandAndRangeYear(brand string, startYear int, endYear int) (v map[int]internal.Vehicle, err error) {
+	v, err = s.rp.FindByBrandAndRangeYear(brand, startYear, endYear)
+	return
+}
+
+// FindAverageSpeedByBrand is a method that returns a value of average speed by brand
+func (s *VehicleDefault) FindAverageSpeedByBrand(brand string) (avgSpeed float64, err error) {
+	avgSpeed, err = s.rp.FindAverageSpeedByBrand(brand)
+	return
+}
+
 // FindByDimensions is a method that returns a map of vehicles that match the dimensions
 func (s *VehicleDefault) FindByDimensions(minHeight float64, maxHeight float64, minWidth float64, maxWidth float64) (v map[int]internal.Vehicle, err error) {
 	v, err = s.rp.FindByDimensions(minHeight, maxHeight, minWidth, maxWidth)

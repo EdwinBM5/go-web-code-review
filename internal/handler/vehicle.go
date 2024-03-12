@@ -85,7 +85,8 @@ func (h *VehicleDefault) GetAll() http.HandlerFunc {
 		}
 
 		response.JSON(w, http.StatusOK, map[string]any{
-			"message": "success",
+			"count":   len(data),
+			"message": "Success",
 			"data":    data,
 		})
 	}
@@ -168,7 +169,7 @@ func (h *VehicleDefault) Create() http.HandlerFunc {
 		data := (&VehicleJSON{}).JSON(vehicle)
 
 		response.JSON(w, http.StatusCreated, map[string]any{
-			"message": "success",
+			"message": "Success",
 			"data":    data,
 		})
 	}
@@ -213,10 +214,97 @@ func (h *VehicleDefault) GetByColorAndYear() http.HandlerFunc {
 		}
 
 		response.JSON(w, http.StatusOK, map[string]any{
-			"message": "success",
+			"count":   len(data),
+			"message": "Success",
 			"data":    data,
 		})
 
+	}
+}
+
+// Exercise three from code review
+// GetByBrandAndRangeYear is a method that returns a handler for the route GET /vehicles/brand/{brand}/between/{start_year}/{end_year}
+func (h *VehicleDefault) GetByBrandAndRangeYear() http.HandlerFunc {
+	return func(w http.ResponseWriter, r *http.Request) {
+		brand := chi.URLParam(r, "brand")
+		startYear := chi.URLParam(r, "start_year")
+		endYear := chi.URLParam(r, "end_year")
+
+		if brand == "" || startYear == "" || endYear == "" {
+			response.Error(w, http.StatusBadRequest, internal.ErrorInvalidBrandAndRangeYear.Error())
+			return
+		}
+
+		startYearInt, err := strconv.Atoi(startYear)
+		if err != nil {
+			response.Error(w, http.StatusBadRequest, internal.ErrorInvalidYear.Error())
+			return
+		}
+
+		endYearInt, err := strconv.Atoi(endYear)
+		if err != nil {
+			response.Error(w, http.StatusBadRequest, internal.ErrorInvalidYear.Error())
+			return
+		}
+
+		v, err := h.sv.FindByBrandAndRangeYear(brand, startYearInt, endYearInt)
+		if err != nil {
+			switch {
+			case errors.Is(err, internal.ErrorVehicleNotFound):
+				response.Error(w, http.StatusNotFound, err.Error())
+			default:
+				response.Error(w, http.StatusInternalServerError, internal.ErrorInternalServer.Error())
+			}
+
+			return
+		}
+
+		// Prepare response in JSON format
+		data := make(map[int]VehicleJSON)
+		for key, value := range v {
+			data[key] = (&VehicleJSON{}).JSON(value)
+		}
+
+		response.JSON(w, http.StatusOK, map[string]any{
+			"count":   len(data),
+			"message": "Success",
+			"data":    data,
+		})
+
+	}
+}
+
+// Exercise four from code review
+// GetAverageSpeedByBrand is a method that returns a handler for the route GET /vehicles/average-speed/brand/{brand}
+func (h *VehicleDefault) GetAverageSpeedByBrand() http.HandlerFunc {
+	return func(w http.ResponseWriter, r *http.Request) {
+		brand := chi.URLParam(r, "brand")
+
+		if brand == "" {
+			response.Error(w, http.StatusBadRequest, internal.ErrorInvalidBrand.Error())
+
+			return
+		}
+
+		averageSpeed, err := h.sv.FindAverageSpeedByBrand(brand)
+		if err != nil {
+			switch {
+			case errors.Is(err, internal.ErrorVehicleNotFound):
+				response.Error(w, http.StatusNotFound, err.Error())
+			default:
+				response.Error(w, http.StatusInternalServerError, internal.ErrorInternalServer.Error())
+			}
+
+			return
+		}
+
+		response.JSON(w, http.StatusOK, map[string]any{
+			"message": "Success",
+			"data": map[string]any{
+				"brand":         brand,
+				"average_speed": averageSpeed,
+			},
+		})
 	}
 }
 
@@ -284,7 +372,8 @@ func (h *VehicleDefault) GetByDimensions() http.HandlerFunc {
 		}
 
 		response.JSON(w, http.StatusOK, map[string]any{
-			"message": "success",
+			"count":   len(data),
+			"message": "Success",
 			"data":    data,
 		})
 	}
