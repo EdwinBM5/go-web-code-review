@@ -89,18 +89,14 @@ func (h *VehicleDefault) GetByColorAndYear() http.HandlerFunc {
 		year := chi.URLParam(r, "year")
 
 		if color == "" || year == "" {
-			response.JSON(w, http.StatusBadRequest, map[string]any{
-				"message": "color and year are required",
-			})
+			response.Error(w, http.StatusBadRequest, internal.ErrorInvalidColorAndYear.Error())
 
 			return
 		}
 
 		fabricationYear, err := strconv.Atoi(year)
 		if err != nil {
-			response.JSON(w, http.StatusBadRequest, map[string]any{
-				"message": "year must be a number",
-			})
+			response.Error(w, http.StatusBadRequest, internal.ErrorInvalidYear.Error())
 
 			return
 		}
@@ -109,13 +105,9 @@ func (h *VehicleDefault) GetByColorAndYear() http.HandlerFunc {
 		if err != nil {
 			switch {
 			case errors.Is(err, internal.ErrorVehicleNotFound):
-				response.JSON(w, http.StatusNotFound, map[string]any{
-					"message": err.Error(),
-				})
+				response.Error(w, http.StatusNotFound, err.Error())
 			default:
-				response.JSON(w, http.StatusInternalServerError, map[string]any{
-					"message": "Internal server error",
-				})
+				response.Error(w, http.StatusInternalServerError, internal.ErrorInternalServer.Error())
 			}
 
 			return
@@ -137,9 +129,8 @@ func (h *VehicleDefault) GetByDimensions() http.HandlerFunc {
 		width := r.URL.Query().Get("width")
 
 		if length == "" || width == "" {
-			response.JSON(w, http.StatusBadRequest, map[string]any{
-				"message": "length and width are required",
-			})
+			response.Error(w, http.StatusBadRequest, internal.ErrorInvalidLengthAndWidth.Error())
+
 			return
 		}
 
@@ -162,18 +153,14 @@ func (h *VehicleDefault) GetByDimensions() http.HandlerFunc {
 
 		minLength, maxLength, err := splitDimension(length)
 		if err != nil {
-			response.JSON(w, http.StatusBadRequest, map[string]any{
-				"message": err,
-			})
+			response.Error(w, http.StatusBadRequest, err.Error())
 
 			return
 		}
 
 		minWidth, maxWidth, err := splitDimension(width)
 		if err != nil {
-			response.JSON(w, http.StatusBadRequest, map[string]any{
-				"message": err,
-			})
+			response.Error(w, http.StatusBadRequest, err.Error())
 
 			return
 		}
@@ -182,14 +169,10 @@ func (h *VehicleDefault) GetByDimensions() http.HandlerFunc {
 		if err != nil {
 			switch {
 			case errors.Is(err, internal.ErrorVehicleNotFound):
-				response.JSON(w, http.StatusNotFound, map[string]any{
-					"message": err.Error(),
-				})
+				response.Error(w, http.StatusNotFound, err.Error())
 
 			default:
-				response.JSON(w, http.StatusInternalServerError, map[string]any{
-					"message": "Internal server error",
-				})
+				response.Error(w, http.StatusInternalServerError, internal.ErrorInternalServer.Error())
 			}
 
 			return
