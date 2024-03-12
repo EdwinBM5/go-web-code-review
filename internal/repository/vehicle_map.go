@@ -106,6 +106,42 @@ func (r *VehicleMap) FindAverageSpeedByBrand(brand string) (avgSpeed float64, er
 	return
 }
 
+// FindByFuelType is a method that returns a map of vehicles that match the fuel type
+func (r *VehicleMap) FindByFuelType(fuelType string) (v map[int]internal.Vehicle, err error) {
+	v = make(map[int]internal.Vehicle)
+
+	for key, value := range r.db {
+		if value.FuelType == fuelType {
+			v[key] = value
+		}
+	}
+
+	if len(v) == 0 {
+		err = internal.ErrorVehicleNotFound
+		return
+	}
+
+	return
+}
+
+// FindByTransmissionType is a method that returns a map of vehicles that match the transmission type
+func (r *VehicleMap) FindByTransmissionType(transmissionType string) (v map[int]internal.Vehicle, err error) {
+	v = make(map[int]internal.Vehicle)
+
+	for key, value := range r.db {
+		if value.Transmission == transmissionType {
+			v[key] = value
+		}
+	}
+
+	if len(v) == 0 {
+		err = internal.ErrorVehicleNotFound
+		return
+	}
+
+	return
+}
+
 // FindByDimensions is a method that returns a map of vehicles that match the dimensions
 func (r *VehicleMap) FindByDimensions(minHeight float64, maxHeight float64, minWidth float64, maxWidth float64) (v map[int]internal.Vehicle, err error) {
 	v = make(map[int]internal.Vehicle)

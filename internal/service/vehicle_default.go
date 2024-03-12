@@ -43,6 +43,18 @@ func (s *VehicleDefault) FindAverageSpeedByBrand(brand string) (avgSpeed float64
 	return
 }
 
+// FindByFuelType is a method that returns a map of vehicles that match the fuel type
+func (s *VehicleDefault) FindByFuelType(fuelType string) (v map[int]internal.Vehicle, err error) {
+	v, err = s.rp.FindByFuelType(fuelType)
+	return
+}
+
+// FindByTransmissionType is a method that returns a map of vehicles that match the transmission type
+func (s *VehicleDefault) FindByTransmissionType(transmissionType string) (v map[int]internal.Vehicle, err error) {
+	v, err = s.rp.FindByTransmissionType(transmissionType)
+	return
+}
+
 // FindByDimensions is a method that returns a map of vehicles that match the dimensions
 func (s *VehicleDefault) FindByDimensions(minHeight float64, maxHeight float64, minWidth float64, maxWidth float64) (v map[int]internal.Vehicle, err error) {
 	v, err = s.rp.FindByDimensions(minHeight, maxHeight, minWidth, maxWidth)

@@ -19,6 +19,12 @@ type VehicleService interface {
 	// FindAverageSpeedByBrand is a method that returns a map of vehicles that match the average speed and brand
 	FindAverageSpeedByBrand(brand string) (avgSpeed float64, err error)
 
+	// FindByFuelType is a method that returns a map of vehicles that match the fuel type
+	FindByFuelType(fuelType string) (v map[int]Vehicle, err error)
+
+	// FindByTransmissionType is a method that returns a map of vehicles that match the transmission type
+	FindByTransmissionType(transmissionType string) (v map[int]Vehicle, err error)
+
 	// FindByDimensions is a method that returns a map of vehicles that match the dimensions
 	FindByDimensions(minLength float64, maxLength float64, minWidth float64, maxWidth float64) (v map[int]Vehicle, err error)
 }
@@ -38,4 +44,6 @@ var (
 	ErrorInvalidQueryParamFormat  = errors.New("Invalid query param format")
 	ErrorInvalidBrandAndRangeYear = errors.New("Brand and range year are required")
 	ErrorInvalidBrand             = errors.New("Brand is required")
+	ErrorInvalidFuelType          = errors.New("Fuel type is required")
+	ErrorInvalidTransmissionType  = errors.New("Transmission type is required")
 )

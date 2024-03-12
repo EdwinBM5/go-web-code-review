@@ -308,6 +308,80 @@ func (h *VehicleDefault) GetAverageSpeedByBrand() http.HandlerFunc {
 	}
 }
 
+// Exercise seven from code review
+// GetByFuelType is a method that returns a handler for the route GET /vehicles/fuel-type/{type}
+func (h *VehicleDefault) GetByFuelType() http.HandlerFunc {
+	return func(w http.ResponseWriter, r *http.Request) {
+		fuelType := chi.URLParam(r, "type")
+		if fuelType == "" {
+			response.Error(w, http.StatusBadRequest, internal.ErrorInvalidFuelType.Error())
+
+			return
+		}
+
+		v, err := h.sv.FindByFuelType(fuelType)
+		if err != nil {
+			switch {
+			case errors.Is(err, internal.ErrorVehicleNotFound):
+				response.Error(w, http.StatusNotFound, err.Error())
+			default:
+				response.Error(w, http.StatusInternalServerError, internal.ErrorInternalServer.Error())
+			}
+
+			return
+		}
+
+		// Prepare response in JSON format
+		data := make(map[int]VehicleJSON)
+		for key, value := range v {
+			data[key] = (&VehicleJSON{}).JSON(value)
+		}
+
+		response.JSON(w, http.StatusOK, map[string]any{
+			"count":   len(data),
+			"message": "Success",
+			"data":    data,
+		})
+	}
+}
+
+// Exercise nine from code review
+// GetByTransmissionType is a method that returns a handler for the route GET /vehicles/transmission/{type}
+func (h *VehicleDefault) GetByTransmissionType() http.HandlerFunc {
+	return func(w http.ResponseWriter, r *http.Request) {
+		transmissionType := chi.URLParam(r, "type")
+		if transmissionType == "" {
+			response.Error(w, http.StatusBadRequest, internal.ErrorInvalidTransmissionType.Error())
+
+			return
+		}
+
+		v, err := h.sv.FindByTransmissionType(transmissionType)
+		if err != nil {
+			switch {
+			case errors.Is(err, internal.ErrorVehicleNotFound):
+				response.Error(w, http.StatusNotFound, err.Error())
+			default:
+				response.Error(w, http.StatusInternalServerError, internal.ErrorInternalServer.Error())
+			}
+
+			return
+		}
+
+		// Prepare response in JSON format
+		data := make(map[int]VehicleJSON)
+		for key, value := range v {
+			data[key] = (&VehicleJSON{}).JSON(value)
+		}
+
+		response.JSON(w, http.StatusOK, map[string]any{
+			"count":   len(data),
+			"message": "Success",
+			"data":    data,
+		})
+	}
+}
+
 // Exercise twelve from code review - No LENGTH uses width and height
 // GetByDimensions is a method that returns a handler for the route GET /vehicles/dimensions?height={height}&width={width}
 func (h *VehicleDefault) GetByDimensions() http.HandlerFunc {

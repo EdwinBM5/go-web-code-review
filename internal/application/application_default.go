@@ -85,6 +85,12 @@ func (a *ServerChi) Run() (err error) {
 		// - GET /vehicles/average-speed/brand/{brand}
 		rt.Get("/average-speed/brand/{brand}", hd.GetAverageSpeedByBrand())
 
+		// - GET /vehicles/fuel-type/{type}
+		rt.Get("/fuel-type/{type}", hd.GetByFuelType())
+
+		// - GET /vehicles/transmission/{type}
+		rt.Get("/transmission/{type}", hd.GetByTransmissionType())
+
 		// - GET /vehicles/dimensions?length={min_length}-{max_length}&width={min_width}-{max_width}
 		rt.Get("/dimensions", hd.GetByDimensions())
 	})
