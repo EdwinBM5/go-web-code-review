@@ -8,6 +8,7 @@ import (
 	"strings"
 
 	"github.com/bootcamp-go/web/response"
+	"github.com/go-chi/chi/v5"
 )
 
 // VehicleJSON is a struct that represents a vehicle in JSON format
@@ -84,8 +85,8 @@ func (h *VehicleDefault) GetAll() http.HandlerFunc {
 // GetByColorAndYear is a method that returns a handler for the route GET /vehicles/color/{color}/year/{year}
 func (h *VehicleDefault) GetByColorAndYear() http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
-		color := r.URL.Query().Get("color")
-		year := r.URL.Query().Get("year")
+		color := chi.URLParam(r, "color")
+		year := chi.URLParam(r, "year")
 
 		if color == "" || year == "" {
 			response.JSON(w, http.StatusBadRequest, map[string]any{
@@ -95,13 +96,35 @@ func (h *VehicleDefault) GetByColorAndYear() http.HandlerFunc {
 			return
 		}
 
-		_, err := strconv.Atoi(year)
+		fabricationYear, err := strconv.Atoi(year)
 		if err != nil {
 			response.JSON(w, http.StatusBadRequest, map[string]any{
 				"message": "year must be a number",
 			})
+
 			return
 		}
+
+		v, err := h.sv.FindByColorAndYear(color, fabricationYear)
+		if err != nil {
+			switch {
+			case errors.Is(err, internal.ErrorVehicleNotFound):
+				response.JSON(w, http.StatusNotFound, map[string]any{
+					"message": err.Error(),
+				})
+			default:
+				response.JSON(w, http.StatusInternalServerError, map[string]any{
+					"message": "Internal server error",
+				})
+			}
+
+			return
+		}
+
+		response.JSON(w, http.StatusOK, map[string]any{
+			"message": "success",
+			"data":    v,
+		})
 
 	}
 }
@@ -164,7 +187,9 @@ func (h *VehicleDefault) GetByDimensions() http.HandlerFunc {
 				})
 
 			default:
-				response.JSON(w, http.StatusInternalServerError, nil)
+				response.JSON(w, http.StatusInternalServerError, map[string]any{
+					"message": "Internal server error",
+				})
 			}
 
 			return

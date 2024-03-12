@@ -35,13 +35,24 @@ func (r *VehicleMap) FindAll() (v map[int]internal.Vehicle, err error) {
 
 // FindByColorAndYear is a method that returns a map of vehicles that match the color and year
 func (r *VehicleMap) FindByColorAndYear(color string, year int) (v map[int]internal.Vehicle, err error) {
+	v = make(map[int]internal.Vehicle)
+
+	for key, value := range r.db {
+		if value.Color == color && value.FabricationYear == year {
+			v[key] = value
+		}
+	}
+
+	if len(v) == 0 {
+		err = internal.ErrorVehicleNotFound
+	}
+
 	return
 }
 
 // FindByDimensions is a method that returns a map of vehicles that match the dimensions
 func (r *VehicleMap) FindByDimensions(minLength float64, maxLength float64, minWidth float64, maxWidth float64) (v map[int]internal.Vehicle, err error) {
 	v = make(map[int]internal.Vehicle)
-	fmt.Println(minLength, maxLength, minWidth, maxWidth)
 
 	for key, value := range r.db {
 		if value.Length >= minLength && value.Length <= maxLength && value.Width >= minWidth && value.Width <= maxWidth {
