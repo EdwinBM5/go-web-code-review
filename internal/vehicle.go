@@ -49,10 +49,14 @@ type Vehicle struct {
 
 // Errors in endpoints
 var (
-	ErrorVehicleNotFound       = errors.New("Vehicle(s) not found")
-	ErrorInternalServer        = errors.New("Internal server error")
+	// Error in most vehicle endpoints
+	ErrorVehicleNotFound    = errors.New("Vehicle(s) not found")
+	ErrorInternalServer     = errors.New("Internal server error")
+	ErrorInvalidBodyRequest = errors.New("Invalid body request")
+	// Error in input/vehicle attributes
 	ErrorInvalidYear           = errors.New("Year must be a number")
 	ErrorInvalidColorAndYear   = errors.New("Color and year are required")
 	ErrorInvalidDimension      = errors.New("Invalid dimensions")
 	ErrorInvalidLengthAndWidth = errors.New("Length and width are required")
+	ErrorVehicleAlreadyExists  = errors.New("Vehicle already exists")
 )

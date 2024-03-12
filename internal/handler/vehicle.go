@@ -2,7 +2,11 @@ package handler
 
 import (
 	"app/internal"
+	"app/internal/tools"
+	"encoding/json"
 	"errors"
+	"fmt"
+	"io"
 	"net/http"
 	"strconv"
 	"strings"
@@ -27,6 +31,25 @@ type VehicleJSON struct {
 	Height          float64 `json:"height"`
 	Length          float64 `json:"length"`
 	Width           float64 `json:"width"`
+}
+
+func (v *VehicleJSON) JSON(vehicle internal.Vehicle) VehicleJSON {
+	v.ID = vehicle.Id
+	v.Brand = vehicle.Brand
+	v.Model = vehicle.Model
+	v.Registration = vehicle.Registration
+	v.Color = vehicle.Color
+	v.FabricationYear = vehicle.FabricationYear
+	v.Capacity = vehicle.Capacity
+	v.MaxSpeed = vehicle.MaxSpeed
+	v.FuelType = vehicle.FuelType
+	v.Transmission = vehicle.Transmission
+	v.Weight = vehicle.Weight
+	v.Height = vehicle.Height
+	v.Length = vehicle.Length
+	v.Width = vehicle.Width
+
+	return *v
 }
 
 // NewVehicleDefault is a function that returns a new instance of VehicleDefault
@@ -54,31 +77,101 @@ func (h *VehicleDefault) GetAll() http.HandlerFunc {
 			return
 		}
 
-		// response
+		// Prepare response in JSON format
 		data := make(map[int]VehicleJSON)
 		for key, value := range v {
-			data[key] = VehicleJSON{
-				ID:              value.Id,
-				Brand:           value.Brand,
-				Model:           value.Model,
-				Registration:    value.Registration,
-				Color:           value.Color,
-				FabricationYear: value.FabricationYear,
-				Capacity:        value.Capacity,
-				MaxSpeed:        value.MaxSpeed,
-				FuelType:        value.FuelType,
-				Transmission:    value.Transmission,
-				Weight:          value.Weight,
-				Height:          value.Height,
-				Length:          value.Length,
-				Width:           value.Width,
-			}
+			data[key] = (&VehicleJSON{}).JSON(value)
 		}
+
 		response.JSON(w, http.StatusOK, map[string]any{
 			"message": "success",
 			"data":    data,
 		})
 	}
+}
+
+// Exercise one from code review
+// Create is a method that returns a handler for the route POST /vehicles
+func (h *VehicleDefault) Create() http.HandlerFunc {
+	return func(w http.ResponseWriter, r *http.Request) {
+		// read body into bytes
+		bytes, err := io.ReadAll(r.Body)
+		if err != nil {
+			response.Error(w, http.StatusBadRequest, internal.ErrorInvalidBodyRequest.Error())
+
+			return
+		}
+
+		// parse body to map to check required fields
+		bodyMap := map[string]any{}
+		if err := json.Unmarshal(bytes, &bodyMap); err != nil {
+			response.Error(w, http.StatusBadRequest, internal.ErrorInvalidBodyRequest.Error())
+
+			return
+		}
+
+		if err := tools.CheckFieldExistance(bodyMap, "brand", "model", "registration", "color", "year"); err != nil {
+			var fieldError *tools.FieldError
+			if errors.As(err, &fieldError) {
+				response.Error(w, http.StatusBadRequest, fmt.Sprintf("%s is required", fieldError.Field))
+				return
+			}
+		}
+
+		// unmarshal bytes into VehicleJSON
+		var v VehicleJSON
+		if err := json.Unmarshal(bytes, &v); err != nil {
+			response.Error(w, http.StatusBadRequest, internal.ErrorInvalidBodyRequest.Error())
+
+			return
+		}
+
+		// setup vehicle attributes
+		vehicleDimension := internal.Dimensions{
+			Length: v.Length,
+			Width:  v.Width,
+			Height: v.Height,
+		}
+
+		vehicleAttributes := internal.VehicleAttributes{
+			Brand:           v.Brand,
+			Model:           v.Model,
+			Registration:    v.Registration,
+			Color:           v.Color,
+			FabricationYear: v.FabricationYear,
+			Capacity:        v.Capacity,
+			MaxSpeed:        v.MaxSpeed,
+			FuelType:        v.FuelType,
+			Transmission:    v.Transmission,
+			Weight:          v.Weight,
+			Dimensions:      vehicleDimension,
+		}
+
+		vehicle := internal.Vehicle{
+			Id:                v.ID,
+			VehicleAttributes: vehicleAttributes,
+		}
+
+		if err := h.sv.Create(&vehicle); err != nil {
+			switch {
+			case errors.Is(err, internal.ErrorVehicleAlreadyExists):
+				response.Error(w, http.StatusConflict, err.Error())
+			default:
+				response.Error(w, http.StatusInternalServerError, internal.ErrorInternalServer.Error())
+			}
+
+			return
+		}
+
+		// Prepara JSON response
+		data := (&VehicleJSON{}).JSON(vehicle)
+
+		response.JSON(w, http.StatusCreated, map[string]any{
+			"message": "success",
+			"data":    data,
+		})
+	}
+
 }
 
 // Exercise two from code review
@@ -113,15 +206,21 @@ func (h *VehicleDefault) GetByColorAndYear() http.HandlerFunc {
 			return
 		}
 
+		// Prepare response in JSON format
+		data := make(map[int]VehicleJSON)
+		for key, value := range v {
+			data[key] = (&VehicleJSON{}).JSON(value)
+		}
+
 		response.JSON(w, http.StatusOK, map[string]any{
 			"message": "success",
-			"data":    v,
+			"data":    data,
 		})
 
 	}
 }
 
-// Exercise twelve from code review
+// Exercise twelve from code review - No length uses width and height
 // GetByDimensions is a method that returns a handler for the route GET /vehicles/dimensions?length={length}&width={width}
 func (h *VehicleDefault) GetByDimensions() http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
@@ -178,30 +277,15 @@ func (h *VehicleDefault) GetByDimensions() http.HandlerFunc {
 			return
 		}
 
+		// Prepare response in JSON format
 		data := make(map[int]VehicleJSON)
 		for key, value := range v {
-			data[key] = VehicleJSON{
-				ID:              value.Id,
-				Brand:           value.Brand,
-				Model:           value.Model,
-				Registration:    value.Registration,
-				Color:           value.Color,
-				FabricationYear: value.FabricationYear,
-				Capacity:        value.Capacity,
-				MaxSpeed:        value.MaxSpeed,
-				FuelType:        value.FuelType,
-				Transmission:    value.Transmission,
-				Weight:          value.Weight,
-				Height:          value.Height,
-				Length:          value.Length,
-				Width:           value.Width,
-			}
+			data[key] = (&VehicleJSON{}).JSON(value)
 		}
 
 		response.JSON(w, http.StatusOK, map[string]any{
 			"message": "success",
 			"data":    data,
 		})
-
 	}
 }

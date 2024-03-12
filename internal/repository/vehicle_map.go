@@ -2,7 +2,6 @@ package repository
 
 import (
 	"app/internal"
-	"fmt"
 )
 
 // NewVehicleMap is a function that returns a new instance of VehicleMap
@@ -33,6 +32,24 @@ func (r *VehicleMap) FindAll() (v map[int]internal.Vehicle, err error) {
 	return
 }
 
+// Create is a method that creates a new vehicle
+func (r *VehicleMap) Create(v *internal.Vehicle) (err error) {
+	// check if vehicle already exists
+	for _, value := range r.db {
+		if value.Id == v.Id || value.Registration == v.Registration {
+			err = internal.ErrorVehicleAlreadyExists
+			return
+		}
+	}
+
+	v.Id = len(r.db) + 1
+
+	// add vehicle to db
+	r.db[v.Id] = *v
+
+	return
+}
+
 // FindByColorAndYear is a method that returns a map of vehicles that match the color and year
 func (r *VehicleMap) FindByColorAndYear(color string, year int) (v map[int]internal.Vehicle, err error) {
 	v = make(map[int]internal.Vehicle)
@@ -58,8 +75,6 @@ func (r *VehicleMap) FindByDimensions(minLength float64, maxLength float64, minW
 		if value.Length >= minLength && value.Length <= maxLength && value.Width >= minWidth && value.Width <= maxWidth {
 			v[key] = value
 		}
-
-		fmt.Println(value.Length, value.Width)
 	}
 
 	if len(v) == 0 {

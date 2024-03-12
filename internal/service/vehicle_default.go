@@ -19,6 +19,12 @@ func (s *VehicleDefault) FindAll() (v map[int]internal.Vehicle, err error) {
 	return
 }
 
+// Create is a method that creates a new vehicle
+func (s *VehicleDefault) Create(v *internal.Vehicle) (err error) {
+	err = s.rp.Create(v)
+	return
+}
+
 // FindByColorAndYear is a method that returns a map of vehicles that match the color and year
 func (s *VehicleDefault) FindByColorAndYear(color string, year int) (v map[int]internal.Vehicle, err error) {
 	v, err = s.rp.FindByColorAndYear(color, year)
