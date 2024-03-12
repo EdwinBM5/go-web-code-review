@@ -1,7 +1,5 @@
 package internal
 
-import "errors"
-
 // Dimensions is a struct that represents a dimension in 3d
 type Dimensions struct {
 	// Height is the height of the dimension
@@ -46,17 +44,3 @@ type Vehicle struct {
 	// VehicleAttribue is the attributes of a vehicle
 	VehicleAttributes
 }
-
-// Errors in endpoints
-var (
-	// Error in most vehicle endpoints
-	ErrorVehicleNotFound    = errors.New("Vehicle(s) not found")
-	ErrorInternalServer     = errors.New("Internal server error")
-	ErrorInvalidBodyRequest = errors.New("Invalid body request")
-	// Error in input/vehicle attributes
-	ErrorInvalidYear           = errors.New("Year must be a number")
-	ErrorInvalidColorAndYear   = errors.New("Color and year are required")
-	ErrorInvalidDimension      = errors.New("Invalid dimensions")
-	ErrorInvalidHeightAndWidth = errors.New("Height and width are required")
-	ErrorVehicleAlreadyExists  = errors.New("Vehicle already exists")
-)
