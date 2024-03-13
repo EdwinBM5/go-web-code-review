@@ -72,3 +72,9 @@ func (s *VehicleDefault) FindByDimensions(minHeight float64, maxHeight float64, 
 	v, err = s.rp.FindByDimensions(minHeight, maxHeight, minWidth, maxWidth)
 	return
 }
+
+// FindByWeightRange is a method that returns a map of vehicles that match the weight range
+func (s *VehicleDefault) FindByWeightRange(minWeight float64, maxWeight float64) (v map[int]internal.Vehicle, err error) {
+	v, err = s.rp.FindByWeightRange(minWeight, maxWeight)
+	return
+}

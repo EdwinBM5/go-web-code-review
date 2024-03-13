@@ -33,6 +33,9 @@ type VehicleService interface {
 
 	// FindByDimensions is a method that returns a map of vehicles that match the dimensions
 	FindByDimensions(minLength float64, maxLength float64, minWidth float64, maxWidth float64) (v map[int]Vehicle, err error)
+
+	// FindByWeightRange is a method that returns a map of vehicles that match the weight range
+	FindByWeightRange(minWeight float64, maxWeight float64) (v map[int]Vehicle, err error)
 }
 
 // Errors in endpoints
@@ -54,4 +57,5 @@ var (
 	ErrorInvalidTransmissionType  = errors.New("Transmission type is required")
 	ErrorInvalidID                = errors.New("ID is required")
 	ErrorParseID                  = errors.New("ID must be a number")
+	ErrorInvalidWeightRange       = errors.New("Invalid weight range")
 )

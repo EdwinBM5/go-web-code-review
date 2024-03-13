@@ -31,4 +31,7 @@ type VehicleRepository interface {
 
 	// FindByDimensions is a method that returns a map of vehicles that match the dimensions
 	FindByDimensions(minLength float64, maxLength float64, minWidth float64, maxWidth float64) (v map[int]Vehicle, err error)
+
+	// FindByWeightRange is a method that returns a map of vehicles that match the weight range
+	FindByWeightRange(minWeight float64, maxWeight float64) (v map[int]Vehicle, err error)
 }

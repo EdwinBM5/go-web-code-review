@@ -519,3 +519,58 @@ func (h *VehicleDefault) GetByDimensions() http.HandlerFunc {
 		})
 	}
 }
+
+// Exercise thirteen from code review
+// GetByWeightRange is a method that returns a handler for the route GET /vehicles/weight?min={weight_min}&max={weight_max}
+func (h *VehicleDefault) GetByWeightRange() http.HandlerFunc {
+	return func(w http.ResponseWriter, r *http.Request) {
+		minWeight := r.URL.Query().Get("min")
+		maxWeight := r.URL.Query().Get("max")
+
+		if minWeight == "" || maxWeight == "" {
+			response.Error(w, http.StatusBadRequest, internal.ErrorInvalidWeightRange.Error())
+
+			return
+		}
+
+		minWeightFloat, err := strconv.ParseFloat(minWeight, 64)
+		if err != nil {
+			response.Error(w, http.StatusBadRequest, internal.ErrorInvalidQueryParamFormat.Error())
+
+			return
+		}
+
+		maxWeightFloat, err := strconv.ParseFloat(maxWeight, 64)
+		if err != nil {
+			response.Error(w, http.StatusBadRequest, internal.ErrorInvalidQueryParamFormat.Error())
+
+			return
+		}
+
+		v, err := h.sv.FindByWeightRange(minWeightFloat, maxWeightFloat)
+		if err != nil {
+			switch {
+			case errors.Is(err, internal.ErrorVehicleNotFound):
+				response.Error(w, http.StatusNotFound, err.Error())
+
+			default:
+				response.Error(w, http.StatusInternalServerError, internal.ErrorInternalServer.Error())
+			}
+
+			return
+		}
+
+		// Prepare response in JSON format
+		data := make(map[int]VehicleJSON)
+		for key, value := range v {
+			data[key] = (&VehicleJSON{}).JSON(value)
+		}
+
+		response.JSON(w, http.StatusOK, map[string]any{
+			"count":   len(data),
+			"message": "Success",
+			"data":    data,
+		})
+
+	}
+}

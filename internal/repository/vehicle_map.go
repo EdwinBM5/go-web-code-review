@@ -118,7 +118,6 @@ func (r *VehicleMap) FindByFuelType(fuelType string) (v map[int]internal.Vehicle
 
 	if len(v) == 0 {
 		err = internal.ErrorVehicleNotFound
-		return
 	}
 
 	return
@@ -149,7 +148,6 @@ func (r *VehicleMap) FindByTransmissionType(transmissionType string) (v map[int]
 
 	if len(v) == 0 {
 		err = internal.ErrorVehicleNotFound
-		return
 	}
 
 	return
@@ -189,7 +187,23 @@ func (r *VehicleMap) FindByDimensions(minHeight float64, maxHeight float64, minW
 
 	if len(v) == 0 {
 		err = internal.ErrorVehicleNotFound
-		return
+	}
+
+	return
+}
+
+// FindByWeightRange is a method that returns a map of vehicles that match the weight range
+func (r *VehicleMap) FindByWeightRange(minWeight float64, maxWeight float64) (v map[int]internal.Vehicle, err error) {
+	v = make(map[int]internal.Vehicle)
+
+	for key, value := range r.db {
+		if value.Weight >= minWeight && value.Weight <= maxWeight {
+			v[key] = value
+		}
+	}
+
+	if len(v) == 0 {
+		err = internal.ErrorVehicleNotFound
 	}
 
 	return

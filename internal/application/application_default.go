@@ -99,6 +99,9 @@ func (a *ServerChi) Run() (err error) {
 
 		// - GET /vehicles/dimensions?length={min_length}-{max_length}&width={min_width}-{max_width}
 		rt.Get("/dimensions", hd.GetByDimensions())
+
+		// - GET /vehicles/weight?min={min_weight}&max={max_weight}
+		rt.Get("/weight", hd.GetByWeightRange())
 	})
 
 	// run server
