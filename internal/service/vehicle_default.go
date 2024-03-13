@@ -19,6 +19,12 @@ func (s *VehicleDefault) FindAll() (v map[int]internal.Vehicle, err error) {
 	return
 }
 
+// FindByID is a method that returns a vehicle by ID
+func (s *VehicleDefault) FindByID(id int) (v internal.Vehicle, err error) {
+	v, err = s.rp.FindByID(id)
+	return
+}
+
 // Create is a method that creates a new vehicle
 func (s *VehicleDefault) Create(v *internal.Vehicle) (err error) {
 	err = s.rp.Create(v)

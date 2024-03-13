@@ -92,6 +92,32 @@ func (h *VehicleDefault) GetAll() http.HandlerFunc {
 	}
 }
 
+// GetByID is a method that returns a handler for the route GET /vehicles/{id}
+func (h *VehicleDefault) GetByID() http.HandlerFunc {
+	return func(w http.ResponseWriter, r *http.Request) {
+		// request
+		id, err := strconv.Atoi(chi.URLParam(r, "id"))
+		if err != nil || id < 0 {
+			response.Error(w, http.StatusBadRequest, internal.ErrorInvalidID.Error())
+			return
+		}
+
+		// process
+		// - get vehicle by id
+		v, err := h.sv.FindByID(id)
+		if err != nil {
+			response.Error(w, http.StatusNotFound, internal.ErrorVehicleNotFound.Error())
+			return
+		}
+
+		// response
+		response.JSON(w, http.StatusOK, map[string]any{
+			"message": "Success",
+			"data":    (&VehicleJSON{}).JSON(v),
+		})
+	}
+}
+
 // Exercise one from code review
 // Create is a method that returns a handler for the route POST /vehicles
 func (h *VehicleDefault) Create() http.HandlerFunc {

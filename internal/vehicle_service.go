@@ -7,6 +7,9 @@ type VehicleService interface {
 	// FindAll is a method that returns a map of all vehicles
 	FindAll() (v map[int]Vehicle, err error)
 
+	// FindByID is a method that returns a vehicle by its ID
+	FindByID(id int) (v Vehicle, err error)
+
 	// Create is a method that creates a new vehicle
 	Create(v *Vehicle) (err error)
 

@@ -33,6 +33,18 @@ func (r *VehicleMap) FindAll() (v map[int]internal.Vehicle, err error) {
 	return
 }
 
+// FindByID is a method that returns a vehicle by ID
+func (r *VehicleMap) FindByID(id int) (v internal.Vehicle, err error) {
+	if _, ok := r.db[id]; !ok {
+		err = internal.ErrorVehicleNotFound
+		return
+	}
+
+	v = r.db[id]
+
+	return
+}
+
 // Create is a method that creates a new vehicle
 func (r *VehicleMap) Create(v *internal.Vehicle) (err error) {
 	// check if vehicle already exists
