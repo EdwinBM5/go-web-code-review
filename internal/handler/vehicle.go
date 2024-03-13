@@ -236,13 +236,13 @@ func (h *VehicleDefault) GetByBrandAndRangeYear() http.HandlerFunc {
 		}
 
 		startYearInt, err := strconv.Atoi(startYear)
-		if err != nil {
+		if err != nil || startYearInt < 0 {
 			response.Error(w, http.StatusBadRequest, internal.ErrorInvalidYear.Error())
 			return
 		}
 
 		endYearInt, err := strconv.Atoi(endYear)
-		if err != nil {
+		if err != nil || endYearInt < 0 {
 			response.Error(w, http.StatusBadRequest, internal.ErrorInvalidYear.Error())
 			return
 		}
