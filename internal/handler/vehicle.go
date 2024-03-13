@@ -175,6 +175,11 @@ func (h *VehicleDefault) Create() http.HandlerFunc {
 			Dimensions:      vehicleDimension,
 		}
 
+		if v.ID < 0 {
+			response.Error(w, http.StatusBadRequest, internal.ErrorParseID.Error())
+			return
+		}
+
 		vehicle := internal.Vehicle{
 			Id:                v.ID,
 			VehicleAttributes: vehicleAttributes,
@@ -438,7 +443,7 @@ func (h *VehicleDefault) Delete() http.HandlerFunc {
 		}
 
 		idVehicle, err := strconv.Atoi(id)
-		if err != nil {
+		if err != nil || idVehicle < 0 {
 			response.Error(w, http.StatusBadRequest, internal.ErrorParseID.Error())
 			return
 		}
