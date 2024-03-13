@@ -22,6 +22,9 @@ type VehicleService interface {
 	// FindByFuelType is a method that returns a map of vehicles that match the fuel type
 	FindByFuelType(fuelType string) (v map[int]Vehicle, err error)
 
+	// Delete is a method that deletes a vehicle
+	Delete(id int) (err error)
+
 	// FindByTransmissionType is a method that returns a map of vehicles that match the transmission type
 	FindByTransmissionType(transmissionType string) (v map[int]Vehicle, err error)
 
@@ -39,7 +42,7 @@ var (
 	ErrorInternalServer     = errors.New("Internal server error")
 	ErrorInvalidBodyRequest = errors.New("Invalid body request")
 	// Error in input/vehicle attributes
-	ErrorInvalidYear              = errors.New("Year must be a number")
+	ErrorInvalidYear              = errors.New("Year must be a number and positive")
 	ErrorInvalidColorAndYear      = errors.New("Color and year are required")
 	ErrorInvalidDimension         = errors.New("Invalid dimensions")
 	ErrorInvalidHeightAndWidth    = errors.New("Height and width are required")
@@ -49,4 +52,6 @@ var (
 	ErrorInvalidBrand             = errors.New("Brand is required")
 	ErrorInvalidFuelType          = errors.New("Fuel type is required")
 	ErrorInvalidTransmissionType  = errors.New("Transmission type is required")
+	ErrorInvalidID                = errors.New("ID is required")
+	ErrorParseID                  = errors.New("ID must be a number")
 )

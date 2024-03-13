@@ -49,6 +49,12 @@ func (s *VehicleDefault) FindByFuelType(fuelType string) (v map[int]internal.Veh
 	return
 }
 
+// Delete is a method that deletes a vehicle
+func (s *VehicleDefault) Delete(id int) (err error) {
+	err = s.rp.Delete(id)
+	return
+}
+
 // FindByTransmissionType is a method that returns a map of vehicles that match the transmission type
 func (s *VehicleDefault) FindByTransmissionType(transmissionType string) (v map[int]internal.Vehicle, err error) {
 	v, err = s.rp.FindByTransmissionType(transmissionType)

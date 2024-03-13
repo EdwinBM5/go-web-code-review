@@ -124,6 +124,19 @@ func (r *VehicleMap) FindByFuelType(fuelType string) (v map[int]internal.Vehicle
 	return
 }
 
+// Delete is a method that deletes a vehicle
+func (r *VehicleMap) Delete(id int) (err error) {
+	for key, value := range r.db {
+		if value.Id == id {
+			delete(r.db, key)
+			return
+		}
+	}
+
+	err = internal.ErrorVehicleNotFound
+	return
+}
+
 // FindByTransmissionType is a method that returns a map of vehicles that match the transmission type
 func (r *VehicleMap) FindByTransmissionType(transmissionType string) (v map[int]internal.Vehicle, err error) {
 	v = make(map[int]internal.Vehicle)

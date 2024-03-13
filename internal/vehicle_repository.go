@@ -20,6 +20,9 @@ type VehicleRepository interface {
 	// FindByFuelType is a method that returns a map of vehicles that match the fuel type
 	FindByFuelType(fuelType string) (v map[int]Vehicle, err error)
 
+	// Delete is a method that deletes a vehicle
+	Delete(id int) (err error)
+
 	// FindByTransmissionType is a method that returns a map of vehicles that match the transmission type
 	FindByTransmissionType(transmissionType string) (v map[int]Vehicle, err error)
 
