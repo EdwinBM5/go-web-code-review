@@ -2,6 +2,7 @@ package repository
 
 import (
 	"app/internal"
+	"strings"
 )
 
 // NewVehicleMap is a function that returns a new instance of VehicleMap
@@ -106,6 +107,25 @@ func (r *VehicleMap) FindAverageSpeedByBrand(brand string) (avgSpeed float64, er
 	return
 }
 
+// UpdateMaxSpeed is a method that updates the max speed of a vehicle
+func (r *VehicleMap) UpdateMaxSpeed(id int, maxSpeed float64) (err error) {
+	if maxSpeed < 0 || maxSpeed > 500 {
+		err = internal.ErrorInvalidMaxSpeedRange
+		return
+	}
+
+	for key, value := range r.db {
+		if value.Id == id {
+			value.MaxSpeed = maxSpeed
+			r.db[key] = value
+			return
+		}
+	}
+
+	err = internal.ErrorVehicleNotFound
+	return
+}
+
 // FindByFuelType is a method that returns a map of vehicles that match the fuel type
 func (r *VehicleMap) FindByFuelType(fuelType string) (v map[int]internal.Vehicle, err error) {
 	v = make(map[int]internal.Vehicle)
@@ -149,6 +169,27 @@ func (r *VehicleMap) FindByTransmissionType(transmissionType string) (v map[int]
 	if len(v) == 0 {
 		err = internal.ErrorVehicleNotFound
 	}
+
+	return
+}
+
+// UpdateFuelType is a method that updates the fuel type of a vehicle
+func (r *VehicleMap) UpdateFuelType(id int, fuelType string) (err error) {
+	for key, value := range r.db {
+		if value.Id == id {
+			switch strings.ToLower(fuelType) {
+			case "gasoline", "diesel", "biodiesel", "gas":
+				value.FuelType = fuelType
+				r.db[key] = value
+			default:
+				err = internal.ErrorInvalidFuelTypeUpdate
+			}
+
+			return
+		}
+	}
+
+	err = internal.ErrorVehicleNotFound
 
 	return
 }

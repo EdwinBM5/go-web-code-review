@@ -85,6 +85,9 @@ func (a *ServerChi) Run() (err error) {
 		// - GET /vehicles/average-speed/brand/{brand}
 		rt.Get("/average-speed/brand/{brand}", hd.GetAverageSpeedByBrand())
 
+		// - PATCH /vehicles/{id}/update-speed
+		rt.Patch("/{id}/update-speed", hd.UpdateMaxSpeed())
+
 		// - GET /vehicles/fuel-type/{type}
 		rt.Get("/fuel-type/{type}", hd.GetByFuelType())
 
@@ -93,6 +96,9 @@ func (a *ServerChi) Run() (err error) {
 
 		// - GET /vehicles/transmission/{type}
 		rt.Get("/transmission/{type}", hd.GetByTransmissionType())
+
+		// - PATCH /vehicles/{id}/update-fuel
+		rt.Patch("/{id}/update-fuel", hd.UpdateFuelType())
 
 		// - GET /vehicles/average-capacity/brand/{brand}
 		rt.Get("/average-capacity/brand/{brand}", hd.GetAverageCapacityByBrand())

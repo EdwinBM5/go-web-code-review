@@ -19,6 +19,9 @@ type VehicleService interface {
 	// FindAverageSpeedByBrand is a method that returns a map of vehicles that match the average speed and brand
 	FindAverageSpeedByBrand(brand string) (avgSpeed float64, err error)
 
+	// UpdateMaxSpeed is a method that updates the max speed of a vehicle
+	UpdateMaxSpeed(id int, maxSpeed float64) (err error)
+
 	// FindByFuelType is a method that returns a map of vehicles that match the fuel type
 	FindByFuelType(fuelType string) (v map[int]Vehicle, err error)
 
@@ -27,6 +30,9 @@ type VehicleService interface {
 
 	// FindByTransmissionType is a method that returns a map of vehicles that match the transmission type
 	FindByTransmissionType(transmissionType string) (v map[int]Vehicle, err error)
+
+	// UpdateFuelType is a method that updates the fuel type of a vehicle
+	UpdateFuelType(id int, fuelType string) (err error)
 
 	// FindAverageCapacityByBrand is a method that returns a map of vehicles that match the average person capacity and brand
 	FindAverageCapacityByBrand(brand string) (avgCapacity float64, err error)
@@ -56,6 +62,9 @@ var (
 	ErrorInvalidFuelType          = errors.New("Fuel type is required")
 	ErrorInvalidTransmissionType  = errors.New("Transmission type is required")
 	ErrorInvalidID                = errors.New("ID is required")
-	ErrorParseID                  = errors.New("ID must be a number")
+	ErrorParseID                  = errors.New("ID must be a positive number")
 	ErrorInvalidWeightRange       = errors.New("Invalid weight range")
+	ErrorInvalidMaxSpeed          = errors.New("Max speed is required")
+	ErrorInvalidMaxSpeedRange     = errors.New("Invalid max speed range")
+	ErrorInvalidFuelTypeUpdate    = errors.New("Fuel type is invalid, must be gasoline, diesel, biodiesel or gas")
 )

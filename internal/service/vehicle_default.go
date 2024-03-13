@@ -43,6 +43,12 @@ func (s *VehicleDefault) FindAverageSpeedByBrand(brand string) (avgSpeed float64
 	return
 }
 
+// UpdateMaxSpeed is a method that updates the max speed of a vehicle
+func (s *VehicleDefault) UpdateMaxSpeed(id int, maxSpeed float64) (err error) {
+	err = s.rp.UpdateMaxSpeed(id, maxSpeed)
+	return
+}
+
 // FindByFuelType is a method that returns a map of vehicles that match the fuel type
 func (s *VehicleDefault) FindByFuelType(fuelType string) (v map[int]internal.Vehicle, err error) {
 	v, err = s.rp.FindByFuelType(fuelType)
@@ -64,6 +70,12 @@ func (s *VehicleDefault) FindByTransmissionType(transmissionType string) (v map[
 // FindAverageCapacityByBrand is a method that returns a value of average person capacity by brand
 func (s *VehicleDefault) FindAverageCapacityByBrand(brand string) (avgCapacity float64, err error) {
 	avgCapacity, err = s.rp.FindAverageCapacityByBrand(brand)
+	return
+}
+
+// UpdateFuelType is a method that updates the fuel type of a vehicle
+func (s *VehicleDefault) UpdateFuelType(id int, fuelType string) (err error) {
+	err = s.rp.UpdateFuelType(id, fuelType)
 	return
 }
 

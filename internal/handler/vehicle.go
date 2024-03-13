@@ -308,6 +308,61 @@ func (h *VehicleDefault) GetAverageSpeedByBrand() http.HandlerFunc {
 	}
 }
 
+// Exercise six from code review
+// UpdateMaxSpeed is a method that returns a handler for the route PATCH /vehicles/{id}/update-speed
+func (h *VehicleDefault) UpdateMaxSpeed() http.HandlerFunc {
+	return func(w http.ResponseWriter, r *http.Request) {
+		id := chi.URLParam(r, "id")
+		if id == "" {
+			response.Error(w, http.StatusBadRequest, internal.ErrorInvalidID.Error())
+
+			return
+		}
+
+		idInt, err := strconv.Atoi(id)
+		if err != nil || idInt < 0 {
+			response.Error(w, http.StatusBadRequest, internal.ErrorParseID.Error())
+
+			return
+		}
+
+		var req struct {
+			MaxSpeed float64 `json:"max_speed"`
+		}
+
+		if err := json.NewDecoder(r.Body).Decode(&req); err != nil {
+			response.Error(w, http.StatusBadRequest, internal.ErrorInvalidBodyRequest.Error())
+
+			return
+		}
+
+		if req.MaxSpeed == 0 {
+			response.Error(w, http.StatusBadRequest, internal.ErrorInvalidMaxSpeed.Error())
+
+			return
+		}
+
+		if err := h.sv.UpdateMaxSpeed(idInt, req.MaxSpeed); err != nil {
+			switch {
+			case errors.Is(err, internal.ErrorVehicleNotFound):
+				response.Error(w, http.StatusNotFound, err.Error())
+			case errors.Is(err, internal.ErrorInvalidMaxSpeedRange):
+				response.Error(w, http.StatusBadRequest, err.Error())
+			default:
+				response.Error(w, http.StatusInternalServerError, internal.ErrorInternalServer.Error())
+			}
+
+			return
+		}
+
+		response.JSON(w, http.StatusOK, map[string]any{
+			"message": "Success",
+			"detail":  fmt.Sprintf("Max speed for vehicle with ID %d has been updated", idInt),
+		})
+
+	}
+}
+
 // Exercise seven from code review
 // GetByFuelType is a method that returns a handler for the route GET /vehicles/fuel-type/{type}
 func (h *VehicleDefault) GetByFuelType() http.HandlerFunc {
@@ -411,6 +466,60 @@ func (h *VehicleDefault) GetByTransmissionType() http.HandlerFunc {
 			"count":   len(data),
 			"message": "Success",
 			"data":    data,
+		})
+	}
+}
+
+// Exercise ten from code review
+// UpdateFuelType is a method that returns a handler for the route PATCH /vehicles/{id}/update-fuel
+func (h *VehicleDefault) UpdateFuelType() http.HandlerFunc {
+	return func(w http.ResponseWriter, r *http.Request) {
+		id := chi.URLParam(r, "id")
+		if id == "" {
+			response.Error(w, http.StatusBadRequest, internal.ErrorInvalidID.Error())
+
+			return
+		}
+
+		idInt, err := strconv.Atoi(id)
+		if err != nil || idInt < 0 {
+			response.Error(w, http.StatusBadRequest, internal.ErrorParseID.Error())
+
+			return
+		}
+
+		var req struct {
+			FuelType string `json:"fuel_type"`
+		}
+
+		if err := json.NewDecoder(r.Body).Decode(&req); err != nil {
+			response.Error(w, http.StatusBadRequest, internal.ErrorInvalidBodyRequest.Error())
+
+			return
+		}
+
+		if req.FuelType == "" {
+			response.Error(w, http.StatusBadRequest, internal.ErrorInvalidFuelType.Error())
+
+			return
+		}
+
+		if err := h.sv.UpdateFuelType(idInt, req.FuelType); err != nil {
+			switch {
+			case errors.Is(err, internal.ErrorVehicleNotFound):
+				response.Error(w, http.StatusNotFound, err.Error())
+			case errors.Is(err, internal.ErrorInvalidFuelTypeUpdate):
+				response.Error(w, http.StatusBadRequest, err.Error())
+			default:
+				response.Error(w, http.StatusInternalServerError, internal.ErrorInternalServer.Error())
+			}
+
+			return
+		}
+
+		response.JSON(w, http.StatusOK, map[string]any{
+			"message": "Success",
+			"detail":  fmt.Sprintf("Fuel type for vehicle with ID %d has been updated", idInt),
 		})
 	}
 }

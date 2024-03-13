@@ -17,6 +17,9 @@ type VehicleRepository interface {
 	// FindAverageSpeedByBrand is a method that returns a map of vehicles that match the average speed and brand
 	FindAverageSpeedByBrand(brand string) (avgSpeed float64, err error)
 
+	// UpdateMaxSpeed is a method that updates the max speed of a vehicle
+	UpdateMaxSpeed(id int, maxSpeed float64) (err error)
+
 	// FindByFuelType is a method that returns a map of vehicles that match the fuel type
 	FindByFuelType(fuelType string) (v map[int]Vehicle, err error)
 
@@ -25,6 +28,9 @@ type VehicleRepository interface {
 
 	// FindByTransmissionType is a method that returns a map of vehicles that match the transmission type
 	FindByTransmissionType(transmissionType string) (v map[int]Vehicle, err error)
+
+	// UpdateFuelType is a method that updates the fuel type of a vehicle
+	UpdateFuelType(id int, fuelType string) (err error)
 
 	// FindAverageCapacityByBrand is a method that returns a map of vehicles that match the average person capacity and brand
 	FindAverageCapacityByBrand(brand string) (avgCapacity float64, err error)
