@@ -48,14 +48,17 @@ func (r *VehicleMap) FindByID(id int) (v internal.Vehicle, err error) {
 // Create is a method that creates a new vehicle
 func (r *VehicleMap) Create(v *internal.Vehicle) (err error) {
 	// check if vehicle already exists
+	if v.Id == 0 {
+		// generate new ID
+		v.Id = len(r.db) + 1
+	}
+
 	for _, value := range r.db {
 		if value.Id == v.Id || value.Registration == v.Registration {
 			err = internal.ErrorVehicleAlreadyExists
 			return
 		}
 	}
-
-	v.Id = len(r.db) + 1
 
 	// add vehicle to db
 	r.db[v.Id] = *v
