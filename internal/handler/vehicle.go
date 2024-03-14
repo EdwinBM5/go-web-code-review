@@ -384,25 +384,21 @@ func (h *VehicleDefault) CreateBatch() http.HandlerFunc {
 
 			*/
 
-			vehicleDimension := internal.Dimensions{
-				Height: v.Height,
-				Width:  v.Width,
-				Length: v.Length,
-			}
-
-			vehicleAttributes := internal.VehicleAttributes{
-				Brand:           v.Brand,
-				Model:           v.Model,
-				FabricationYear: v.FabricationYear,
-				Color:           v.Color,
-				Weight:          v.Weight,
-				Dimensions:      vehicleDimension,
-				Registration:    v.Registration,
-			}
-
 			vehicle := internal.Vehicle{
-				Id:                v.ID,
-				VehicleAttributes: vehicleAttributes,
+				Id: v.ID,
+				VehicleAttributes: internal.VehicleAttributes{
+					Brand:           v.Brand,
+					Model:           v.Model,
+					FabricationYear: v.FabricationYear,
+					Color:           v.Color,
+					Weight:          v.Weight,
+					Dimensions: internal.Dimensions{
+						Height: v.Height,
+						Width:  v.Width,
+						Length: v.Length,
+					},
+					Registration: v.Registration,
+				},
 			}
 
 			vehicles = append(vehicles, vehicle)

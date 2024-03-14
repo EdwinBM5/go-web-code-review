@@ -1,0 +1,15 @@
+Errores:
+
+Validarlos en su propia capa y su definición sobre la interfaz de cada capa,
+así mismo en la implementación concatenar errores para hacer usos de estos mismos
+
+
+Validaciones dinamicas y estaticas:
+
+Realizar transformación a bytes de la request para poder manipularla de diversas formas
+para sus validaciones tanto dinamicas como estaticas
+
+Refactorización:
+
+En cada capa pueden ir las funciones que reducen código dentro de sí misma, si puede abarcar más
+de una capa, se sugiere crear un pkg 

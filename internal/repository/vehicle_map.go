@@ -52,7 +52,6 @@ func (r *VehicleMap) Create(v *internal.Vehicle) (err error) {
 		// generate new ID
 		v.Id = len(r.db) + 1
 	}
-	println(v.Id)
 
 	for _, value := range r.db {
 		if value.Id == v.Id || value.Registration == v.Registration {
