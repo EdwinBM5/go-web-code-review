@@ -49,6 +49,12 @@ func (s *VehicleDefault) FindAverageSpeedByBrand(brand string) (avgSpeed float64
 	return
 }
 
+// CreateBatch is a method that creates a batch of vehicles
+func (s *VehicleDefault) CreateBatch(v []internal.Vehicle) (err error) {
+	err = s.rp.CreateBatch(v)
+	return
+}
+
 // UpdateMaxSpeed is a method that updates the max speed of a vehicle
 func (s *VehicleDefault) UpdateMaxSpeed(id int, maxSpeed float64) (err error) {
 	err = s.rp.UpdateMaxSpeed(id, maxSpeed)

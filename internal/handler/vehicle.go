@@ -339,6 +339,95 @@ func (h *VehicleDefault) GetAverageSpeedByBrand() http.HandlerFunc {
 	}
 }
 
+// Exercise five from code review
+// CreateBatch is a method that returns a handler for the route POST /vehicles/batch
+func (h *VehicleDefault) CreateBatch() http.HandlerFunc {
+	return func(w http.ResponseWriter, r *http.Request) {
+		var req struct {
+			Vehicles []VehicleJSON `json:"vehicles"`
+		}
+
+		if err := json.NewDecoder(r.Body).Decode(&req); err != nil {
+			response.Error(w, http.StatusBadRequest, internal.ErrorInvalidBodyRequest.Error())
+
+			return
+		}
+
+		if len(req.Vehicles) == 0 {
+			response.Error(w, http.StatusBadRequest, internal.ErrorInvalidVehicles.Error())
+
+			return
+		}
+
+		var vehicles []internal.Vehicle
+
+		for _, v := range req.Vehicles {
+			if v.ID < 0 {
+				response.Error(w, http.StatusBadRequest, internal.ErrorParseID.Error())
+
+				return
+			}
+
+			// parse req to map to check required fields
+			/*
+				reqMap := map[string]any{}
+				bytes, _ := json.Marshal(v)
+				json.Unmarshal(bytes, &reqMap)
+
+				if err := tools.CheckFieldExistance(reqMap, "brand", "model", "registration", "color", "year"); err != nil {
+					var fieldError *tools.FieldError
+					if errors.As(err, &fieldError) {
+						response.Error(w, http.StatusBadRequest, fmt.Sprintf("%s is required", fieldError.Field))
+						return
+					}
+				}
+
+			*/
+
+			vehicleDimension := internal.Dimensions{
+				Height: v.Height,
+				Width:  v.Width,
+				Length: v.Length,
+			}
+
+			vehicleAttributes := internal.VehicleAttributes{
+				Brand:           v.Brand,
+				Model:           v.Model,
+				FabricationYear: v.FabricationYear,
+				Color:           v.Color,
+				Weight:          v.Weight,
+				Dimensions:      vehicleDimension,
+				Registration:    v.Registration,
+			}
+
+			vehicle := internal.Vehicle{
+				Id:                v.ID,
+				VehicleAttributes: vehicleAttributes,
+			}
+
+			vehicles = append(vehicles, vehicle)
+		}
+
+		if err := h.sv.CreateBatch(vehicles); err != nil {
+			switch {
+			case errors.Is(err, internal.ErrorVehicleAlreadyExists):
+				response.Error(w, http.StatusConflict, err.Error())
+			default:
+				response.Error(w, http.StatusInternalServerError, internal.ErrorInternalServer.Error())
+			}
+
+			return
+		}
+
+		// Prepare JSON Response
+		response.JSON(w, http.StatusCreated, map[string]any{
+			"message": "Success",
+			"data":    "Vehicles created successfully",
+		})
+
+	}
+}
+
 // Exercise six from code review
 // UpdateMaxSpeed is a method that returns a handler for the route PATCH /vehicles/{id}/update-speed
 func (h *VehicleDefault) UpdateMaxSpeed() http.HandlerFunc {

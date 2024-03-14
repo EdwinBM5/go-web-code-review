@@ -22,6 +22,9 @@ type VehicleService interface {
 	// FindAverageSpeedByBrand is a method that returns a map of vehicles that match the average speed and brand
 	FindAverageSpeedByBrand(brand string) (avgSpeed float64, err error)
 
+	// CreateBatch is a method that creates a batch of vehicles
+	CreateBatch(v []Vehicle) (err error)
+
 	// UpdateMaxSpeed is a method that updates the max speed of a vehicle
 	UpdateMaxSpeed(id int, maxSpeed float64) (err error)
 
@@ -70,4 +73,5 @@ var (
 	ErrorInvalidMaxSpeed          = errors.New("Max speed is required")
 	ErrorInvalidMaxSpeedRange     = errors.New("Invalid max speed range")
 	ErrorInvalidFuelTypeUpdate    = errors.New("Fuel type is invalid, must be gasoline, diesel, biodiesel or gas")
+	ErrorInvalidVehicles          = errors.New("Invalid List of vehicles for creation batch")
 )

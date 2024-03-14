@@ -88,6 +88,9 @@ func (a *ServerChi) Run() (err error) {
 		// - GET /vehicles/average-speed/brand/{brand}
 		rt.Get("/average-speed/brand/{brand}", hd.GetAverageSpeedByBrand())
 
+		// - POST /vehicles/batch
+		rt.Post("/batch", hd.CreateBatch())
+
 		// - PATCH /vehicles/{id}/update-speed
 		rt.Patch("/{id}/update-speed", hd.UpdateMaxSpeed())
 

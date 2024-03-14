@@ -52,6 +52,7 @@ func (r *VehicleMap) Create(v *internal.Vehicle) (err error) {
 		// generate new ID
 		v.Id = len(r.db) + 1
 	}
+	println(v.Id)
 
 	for _, value := range r.db {
 		if value.Id == v.Id || value.Registration == v.Registration {
@@ -118,6 +119,18 @@ func (r *VehicleMap) FindAverageSpeedByBrand(brand string) (avgSpeed float64, er
 	}
 
 	avgSpeed = totalSpeed / float64(brandCount)
+
+	return
+}
+
+// CreateBatch is a method that creates a batch of vehicles
+func (r *VehicleMap) CreateBatch(v []internal.Vehicle) (err error) {
+	for _, value := range v {
+		err = r.Create(&value)
+		if err != nil {
+			return
+		}
+	}
 
 	return
 }
